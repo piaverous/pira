@@ -1,0 +1,34 @@
+jira:
+  url: https://jira.example.com
+  project_key: ABD
+  request_max_results: 100
+
+  custom_fields:
+    - id: customfield_10006
+      alias: "Story Points"
+
+  sprint_config:
+    story_point_field_id: customfield_10006
+
+    ticket_statuses:
+      - name: Todo
+        statuses:
+        - Open
+        - Ready for Development
+      - name: Ongoing
+        statuses:
+        - Developing
+        - Testing
+      - name: Code Review
+        statuses:
+        - Code Reviewing
+      - name: Blocked
+        statuses:
+        - Blocked
+      - name: PO Validation
+        statuses:
+        - PO Reviewing
+      - name: Done
+        statuses:
+        - Done
+        - Cancelled 
