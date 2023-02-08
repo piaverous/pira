@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/piaverous/pira/pira"
 	"github.com/piaverous/pira/pira/types"
@@ -27,7 +28,8 @@ func buildSprintDailyCommand(app *pira.App) *cobra.Command {
 			sprint := args[0]
 			response, err := app.ListJiraIssues(sprint)
 			if err != nil {
-				return err
+				fmt.Fprintln(os.Stderr, err)
+				os.Exit(1)
 			}
 
 			sprintReport := map[string][]types.JiraIssue{}
@@ -48,7 +50,8 @@ func buildSprintDailyCommand(app *pira.App) *cobra.Command {
 				for _, issue := range sprintReport[category.Name] {
 					points, err := app.StoryPointsFromIssue(issue)
 					if err != nil {
-						return err
+						fmt.Fprintln(os.Stderr, err)
+						os.Exit(1)
 					}
 					categoryStoryPoints += points
 				}

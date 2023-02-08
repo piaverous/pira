@@ -6,13 +6,12 @@ import (
 )
 
 func buildSprintCommand(app *pira.App) *cobra.Command {
-	// TODO: implement the "list" sub-command here.
-	list := &cobra.Command{
+	sprint := &cobra.Command{
 		Use:   "sprint",
 		Short: "Get sprint info from your Jira instance.",
 	}
 
-	list.AddCommand(buildSprintDailyCommand(app))
+	sprint.AddCommand(buildSprintDailyCommand(app))
 
-	return list
+	return sprint
 }

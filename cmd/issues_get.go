@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/piaverous/pira/pira"
 	"github.com/spf13/cobra"
@@ -17,7 +18,8 @@ func buildIssuesGetCommand(app *pira.App) *cobra.Command {
 			issueId := args[0]
 			response, err := app.GetJiraIssue(issueId)
 			if err != nil {
-				return err
+				fmt.Fprintln(os.Stderr, err)
+				os.Exit(1)
 			}
 			if response.Key == "" {
 				fmt.Printf("No issue for ID %s\n", issueId)

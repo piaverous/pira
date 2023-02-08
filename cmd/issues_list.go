@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/piaverous/pira/pira"
 	"github.com/spf13/cobra"
@@ -17,7 +18,8 @@ func buildIssuesListCommand(app *pira.App) *cobra.Command {
 			sprint := args[0]
 			response, err := app.ListJiraIssues(sprint)
 			if err != nil {
-				return err
+				fmt.Fprintln(os.Stderr, err)
+				os.Exit(1)
 			}
 
 			for _, issue := range response.Issues {

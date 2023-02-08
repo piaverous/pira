@@ -6,11 +6,11 @@ import (
 )
 
 func buildConfigCommand(app *pira.App) *cobra.Command {
-	list := &cobra.Command{
+	config := &cobra.Command{
 		Use:   "config",
 		Short: "Tools to configure pira",
 	}
 
-	list.AddCommand(buildConfigShowCommand(app))
-	return list
+	config.AddCommand(buildConfigShowCommand(app))
+	return config
 }

@@ -6,14 +6,13 @@ import (
 )
 
 func buildIssuesCommand(app *pira.App) *cobra.Command {
-	// TODO: implement the "list" sub-command here.
-	list := &cobra.Command{
+	issues := &cobra.Command{
 		Use:   "issues",
 		Short: "Manage issues in your Jira instance.",
 	}
 
-	list.AddCommand(buildIssuesListCommand(app))
-	list.AddCommand(buildIssuesGetCommand(app))
+	issues.AddCommand(buildIssuesListCommand(app))
+	issues.AddCommand(buildIssuesGetCommand(app))
 
-	return list
+	return issues
 }
