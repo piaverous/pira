@@ -28,8 +28,8 @@ func getAttr(obj interface{}, fieldName string) (reflect.Value, error) {
 	return curField, nil
 }
 
-func (app *App) GetJiraIssue(issueId string) (types.JiraResponse, error) {
-	var cResp types.JiraResponse
+func (app *App) GetJiraIssue(issueId string) (types.JiraIssue, error) {
+	var cResp types.JiraIssue
 
 	// 1. Build URL for Jira API call
 	baseUrl, err := url.JoinPath(app.Config.Jira.Url, "rest/api/latest")
@@ -82,8 +82,8 @@ func (app *App) GetJiraIssue(issueId string) (types.JiraResponse, error) {
 	return cResp, nil
 }
 
-func (app *App) ListJiraIssues(sprint string) (types.JiraListResponse, error) {
-	var cResp types.JiraListResponse
+func (app *App) ListJiraIssues(sprint string) (types.JiraIssueList, error) {
+	var cResp types.JiraIssueList
 
 	// 1. Build URL for Jira API call
 	baseUrl, err := url.JoinPath(app.Config.Jira.Url, "rest/api/latest")
@@ -127,7 +127,7 @@ func (app *App) ListJiraIssues(sprint string) (types.JiraListResponse, error) {
 		return cResp, err
 	}
 
-	var intermediateResult types.JiraListResponseWithUnknownFields
+	var intermediateResult types.JiraIssueListWithUnknownFields
 	if err := json.Unmarshal(body, &intermediateResult); err != nil {
 		return cResp, err
 	}
@@ -140,7 +140,7 @@ func (app *App) ListJiraIssues(sprint string) (types.JiraListResponse, error) {
 	return cResp, nil
 }
 
-func (app *App) StoryPointsFromIssue(issue types.JiraResponse) (int, error) {
+func (app *App) StoryPointsFromIssue(issue types.JiraIssue) (int, error) {
 	storyPointsFieldId := app.Config.Jira.SprintConfig.StoryPointFieldId
 	if strings.Contains(storyPointsFieldId, "customfield") {
 		for _, cField := range issue.Fields.CustomFields {

@@ -7,8 +7,8 @@ import (
 	"github.com/piaverous/pira/pira/types"
 )
 
-func InjectCustomFieldsFromJSON(customFields []types.JiraCustomField, body []byte, targetObject *types.JiraResponse) error {
-	var result types.JiraResponseWithUnknownFields
+func InjectCustomFieldsFromJSON(customFields []types.JiraCustomField, body []byte, targetObject *types.JiraIssue) error {
+	var result types.JiraIssueWithUnknownFields
 	if err := json.Unmarshal(body, &result); err != nil {
 		return err
 	}
@@ -31,8 +31,8 @@ func InjectCustomFieldsFromJSON(customFields []types.JiraCustomField, body []byt
 	return nil
 }
 
-func InjectCustomFieldsFromJSONList(customFields []types.JiraCustomField, reference types.JiraListResponseWithUnknownFields, targetObject *types.JiraListResponse) error {
-	var result []types.JiraResponse
+func InjectCustomFieldsFromJSONList(customFields []types.JiraCustomField, reference types.JiraIssueListWithUnknownFields, targetObject *types.JiraIssueList) error {
+	var result []types.JiraIssue
 	for _, referenceIssue := range reference.Issues {
 		for _, targetIssue := range targetObject.Issues {
 			if referenceIssue.Key == targetIssue.Key {

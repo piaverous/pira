@@ -1,27 +1,17 @@
 package types
 
-type JiraListResponse struct {
+type JiraIssue struct {
+	Key    string
+	Fields JiraIssueFields
+}
+
+type JiraIssueList struct {
 	StartAt int
 	Total   int
-	Issues  []JiraResponse
-}
-type JiraListResponseWithUnknownFields struct {
-	StartAt int
-	Total   int
-	Issues  []JiraResponseWithUnknownFields
+	Issues  []JiraIssue
 }
 
-type JiraResponse struct {
-	Key    string
-	Fields JiraResponseFields
-}
-
-type JiraResponseWithUnknownFields struct {
-	Key    string
-	Fields map[string]interface{}
-}
-
-type JiraResponseFields struct {
+type JiraIssueFields struct {
 	Created      string
 	Summary      string
 	Updated      string
@@ -63,4 +53,14 @@ type JiraCustomField struct {
 	Alias string
 	Value string
 	Type  string
+}
+
+type JiraIssueWithUnknownFields struct {
+	Key    string
+	Fields map[string]interface{}
+}
+type JiraIssueListWithUnknownFields struct {
+	StartAt int
+	Total   int
+	Issues  []JiraIssueWithUnknownFields
 }

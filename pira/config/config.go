@@ -10,7 +10,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-// TODO(busser): document fields.
 type Config struct {
 	Jira   JiraConfig `mapstructure:"jira"`
 	DryRun bool       `mapstructure:"dry_run"`

@@ -30,9 +30,9 @@ func buildSprintDailyCommand(app *pira.App) *cobra.Command {
 				return err
 			}
 
-			sprintReport := map[string][]types.JiraResponse{}
+			sprintReport := map[string][]types.JiraIssue{}
 			for _, category := range app.Config.Jira.SprintConfig.TicketStatuses {
-				sprintReport[category.Name] = []types.JiraResponse{}
+				sprintReport[category.Name] = []types.JiraIssue{}
 			}
 
 			for _, issue := range response.Issues {
