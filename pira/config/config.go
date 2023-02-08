@@ -15,6 +15,7 @@ type Config struct {
 	DryRun bool       `mapstructure:"dry_run"`
 }
 
+// Configuration of how pira should interact with Jira.
 type JiraConfig struct {
 	Board             JiraBoardConfig         `mapstructure:"board"`
 	ProjectKey        string                  `mapstructure:"project_key"`
@@ -42,10 +43,10 @@ type JiraBoardConfig struct {
 	Type string `mapstructure:"type"`
 }
 
+// Load pira coniguration.
 func (c *Config) Load(flags *pflag.FlagSet) error {
 	v := viper.New()
 
-	// TODO: Implement this feature.
 	// pira looks for configuration files called config.yaml, config.json,
 	// config.toml, config.hcl, etc.
 	v.SetConfigName("config")
