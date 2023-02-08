@@ -17,6 +17,9 @@ import (
 func getAttr(obj interface{}, fieldName string) (reflect.Value, error) {
 	var curField reflect.Value
 	pointToStruct := reflect.ValueOf(obj) // addressable
+	if pointToStruct.Kind() != reflect.Interface || pointToStruct.Kind() != reflect.Pointer {
+		return curField, fmt.Errorf("could not get attribute '%s' from object", fieldName)
+	}
 	curStruct := pointToStruct.Elem()
 	if curStruct.Kind() != reflect.Struct {
 		return curField, fmt.Errorf("could not get attribute '%s' from object : not a struct", fieldName)
@@ -127,7 +130,7 @@ func (app *App) ListJiraIssues(sprint string) (types.JiraIssueList, error) {
 		return cResp, err
 	}
 
-	var intermediateResult types.JiraIssueListWithUnknownFields
+	var intermediateResult types.JiraIssueListWithJSONFields
 	if err := json.Unmarshal(body, &intermediateResult); err != nil {
 		return cResp, err
 	}
