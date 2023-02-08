@@ -39,7 +39,7 @@ brews:
     license: Apache-2.0
     tap:
       owner: piaverous
-      name: tap
+      name: homebrew-tap
     install: |
       bin.install "pira"
     test: |
