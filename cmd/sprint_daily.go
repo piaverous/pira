@@ -22,10 +22,12 @@ func buildSprintDailyCommand(app *pira.App) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:        "daily",
 		Short:      "Daily Sprint recap",
-		Args:       cobra.MinimumNArgs(1),
 		ArgAliases: []string{"sprint"},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			sprint := args[0]
+			var sprint string
+			if len(args) > 0 {
+				sprint = args[0]
+			}
 			response, err := app.ListJiraIssues(sprint)
 			if err != nil {
 				fmt.Fprintln(os.Stderr, err)

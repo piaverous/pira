@@ -14,6 +14,8 @@ import (
 	"github.com/piaverous/pira/pira/utils"
 )
 
+// Get the value of a given field in an object.
+// Function taken from https://stackoverflow.com/a/66470232/10494684.
 func getAttr(obj interface{}, fieldName string) (reflect.Value, error) {
 	var curField reflect.Value
 	pointToStruct := reflect.ValueOf(obj) // addressable
@@ -35,23 +37,13 @@ func (app *App) GetJiraIssue(issueId string) (types.JiraIssue, error) {
 	var cResp types.JiraIssue
 
 	// 1. Build URL for Jira API call
-	baseUrl, err := url.JoinPath(app.Config.Jira.Url, "rest/api/latest")
-	if err != nil {
-		return cResp, err
-	}
-
-	apiUrl, err := url.JoinPath(baseUrl, "issue")
-	if err != nil {
-		return cResp, err
-	}
-
-	url, err := url.JoinPath(apiUrl, issueId)
+	jiraUrl, err := url.JoinPath(app.Config.Jira.Url, "rest/api/latest", "issue", issueId)
 	if err != nil {
 		return cResp, err
 	}
 
 	// 2. Make authenticated API request
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", jiraUrl, nil)
 	if err != nil {
 		return cResp, err
 	}
@@ -77,8 +69,13 @@ func (app *App) GetJiraIssue(issueId string) (types.JiraIssue, error) {
 		return cResp, err
 	}
 
+	var reference types.JiraIssueWithJSONFields
+	if err := json.Unmarshal(body, &reference); err != nil {
+		return cResp, err
+	}
+
 	// 4. Parse additional Custom Fields
-	if err := utils.InjectCustomFieldsFromJSON(app.Config.Jira.CustomFields, body, &cResp); err != nil {
+	if err := utils.InjectCustomFieldsFromJSON(app.Config.Jira.CustomFields, reference, &cResp); err != nil {
 		return cResp, err
 	}
 
@@ -89,20 +86,20 @@ func (app *App) ListJiraIssues(sprint string) (types.JiraIssueList, error) {
 	var cResp types.JiraIssueList
 
 	// 1. Build URL for Jira API call
-	baseUrl, err := url.JoinPath(app.Config.Jira.Url, "rest/api/latest")
-	if err != nil {
-		return cResp, err
-	}
-
-	url, err := url.JoinPath(baseUrl, "search")
+	jiraUrl, err := url.JoinPath(app.Config.Jira.Url, "rest/api/latest", "search")
 	if err != nil {
 		return cResp, err
 	}
 
 	// 2. Make authenticated API request
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", jiraUrl, nil)
 	if err != nil {
 		return cResp, err
+	}
+
+	sprintFilterQuery := fmt.Sprintf("project=%s&sprint in (\"Sprint %s\")", app.Config.Jira.ProjectKey, sprint)
+	if sprint == "" {
+		sprintFilterQuery = fmt.Sprintf("project=%s&sprint in openSprints()&sprint not in futureSprints()", app.Config.Jira.ProjectKey)
 	}
 
 	req.Header = http.Header{
@@ -110,7 +107,7 @@ func (app *App) ListJiraIssues(sprint string) (types.JiraIssueList, error) {
 	}
 	queryParams := req.URL.Query()
 	queryParams.Add("maxResults", app.Config.Jira.RequestMaxResults)
-	queryParams.Add("jql", fmt.Sprintf("project=%s&sprint in (\"Sprint %s\")", app.Config.Jira.ProjectKey, sprint))
+	queryParams.Add("jql", sprintFilterQuery)
 	req.URL.RawQuery = queryParams.Encode()
 
 	client := &http.Client{}
@@ -130,13 +127,13 @@ func (app *App) ListJiraIssues(sprint string) (types.JiraIssueList, error) {
 		return cResp, err
 	}
 
-	var intermediateResult types.JiraIssueListWithJSONFields
-	if err := json.Unmarshal(body, &intermediateResult); err != nil {
+	var reference types.JiraIssueListWithJSONFields
+	if err := json.Unmarshal(body, &reference); err != nil {
 		return cResp, err
 	}
 
 	// 4. Parse additional Custom Fields
-	if err := utils.InjectCustomFieldsFromJSONList(app.Config.Jira.CustomFields, intermediateResult, &cResp); err != nil {
+	if err := utils.InjectCustomFieldsFromJSONList(app.Config.Jira.CustomFields, reference, &cResp); err != nil {
 		return cResp, err
 	}
 

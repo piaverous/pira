@@ -1,20 +1,14 @@
 package utils
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/piaverous/pira/pira/types"
 )
 
-func InjectCustomFieldsFromJSON(customFields []types.JiraCustomField, body []byte, targetObject *types.JiraIssue) error {
-	var result types.JiraIssueWithJSONFields
-	if err := json.Unmarshal(body, &result); err != nil {
-		return err
-	}
-
+func InjectCustomFieldsFromJSON(customFields []types.JiraCustomField, reference types.JiraIssueWithJSONFields, targetObject *types.JiraIssue) error {
 	for _, cField := range customFields {
-		value, ok := result.Fields[cField.Id]
+		value, ok := reference.Fields[cField.Id]
 		if !ok {
 			continue
 		}
