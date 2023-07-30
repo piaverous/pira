@@ -57,6 +57,10 @@ func (app *App) GetJiraIssue(issueId string) (types.JiraIssue, error) {
 	if err != nil {
 		return cResp, err
 	}
+	if resp.StatusCode >= 400 {
+		err = fmt.Errorf("got %d: %s when calling jira; maybe your token expired", resp.StatusCode, resp.Status)
+		return cResp, err
+	}
 
 	// 3. Parse response
 	defer resp.Body.Close()
@@ -97,7 +101,7 @@ func (app *App) ListJiraIssues(sprint string) (types.JiraIssueList, error) {
 		return cResp, err
 	}
 
-	sprintFilterQuery := fmt.Sprintf("project=%s&sprint in (\"Sprint %s\")", app.Config.Jira.ProjectKey, sprint)
+	sprintFilterQuery := fmt.Sprintf("project=%s&sprint in (\"%s\")", app.Config.Jira.ProjectKey, sprint)
 	if sprint == "" {
 		sprintFilterQuery = fmt.Sprintf("project=%s&sprint in openSprints()&sprint not in futureSprints()", app.Config.Jira.ProjectKey)
 	}
@@ -113,6 +117,10 @@ func (app *App) ListJiraIssues(sprint string) (types.JiraIssueList, error) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
+		return cResp, err
+	}
+	if resp.StatusCode >= 400 {
+		err = fmt.Errorf("got %d: %s when calling jira; maybe your token expired", resp.StatusCode, resp.Status)
 		return cResp, err
 	}
 
