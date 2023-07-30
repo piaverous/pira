@@ -12,7 +12,7 @@ func New(app *pira.App) *cobra.Command {
 func buildPiraCommand(app *pira.App) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "pira",
-		Short: "pira helps you annihilate all of your cloud resources",
+		Short: "pira helps you get info from your Jira projects",
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			return app.Config.Load(cmd.Flags())
 		},

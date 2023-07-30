@@ -10,7 +10,7 @@ import (
 
 func buildIssuesGetCommand(app *pira.App) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:        "get",
+		Use:        "get [flags] issue_id",
 		Short:      "Get an issue",
 		Args:       cobra.MinimumNArgs(1),
 		ArgAliases: []string{"issue_id"},

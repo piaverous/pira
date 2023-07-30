@@ -10,7 +10,7 @@ import (
 
 func buildIssuesListCommand(app *pira.App) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:        "list",
+		Use:        "list [flags] sprint",
 		Short:      "List issues",
 		Args:       cobra.MinimumNArgs(1),
 		ArgAliases: []string{"sprint"},
