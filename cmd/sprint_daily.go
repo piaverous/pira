@@ -48,7 +48,7 @@ func buildSprintDailyCommand(app *pira.App) *cobra.Command {
 			}
 
 			for _, category := range app.Config.Jira.SprintConfig.TicketStatuses {
-				categoryStoryPoints := 0
+				var categoryStoryPoints float64
 				for _, issue := range sprintReport[category.Name] {
 					points, err := app.StoryPointsFromIssue(issue)
 					if err != nil {
@@ -57,7 +57,7 @@ func buildSprintDailyCommand(app *pira.App) *cobra.Command {
 					}
 					categoryStoryPoints += points
 				}
-				fmt.Printf("| %15s |-> %2d issues | %2d story points\n", category.Name, len(sprintReport[category.Name]), categoryStoryPoints)
+				fmt.Printf("| %15s |-> %3d issues | %3.0f story points\n", category.Name, len(sprintReport[category.Name]), categoryStoryPoints)
 			}
 
 			return nil

@@ -101,7 +101,7 @@ func (app *App) ListJiraIssues(sprint string) (types.JiraIssueList, error) {
 		return cResp, err
 	}
 
-	sprintFilterQuery := fmt.Sprintf("project=%s&sprint in (\"%s\")", app.Config.Jira.ProjectKey, sprint)
+	sprintFilterQuery := fmt.Sprintf("project=%s&sprint in openSprints()&sprint in (\"%s\")", app.Config.Jira.ProjectKey, sprint)
 	if sprint == "" {
 		sprintFilterQuery = fmt.Sprintf("project=%s&sprint in openSprints()&sprint not in futureSprints()", app.Config.Jira.ProjectKey)
 	}
@@ -148,13 +148,14 @@ func (app *App) ListJiraIssues(sprint string) (types.JiraIssueList, error) {
 	return cResp, nil
 }
 
-func (app *App) StoryPointsFromIssue(issue types.JiraIssue) (int, error) {
+func (app *App) StoryPointsFromIssue(issue types.JiraIssue) (float64, error) {
 	storyPointsFieldId := app.Config.Jira.SprintConfig.StoryPointFieldId
 	if strings.Contains(storyPointsFieldId, "customfield") {
 		for _, cField := range issue.Fields.CustomFields {
 			if cField.Id == storyPointsFieldId {
-				i, err := strconv.Atoi(cField.Value)
+				i, err := strconv.ParseFloat(cField.Value, 64)
 				if err != nil {
+					fmt.Println("error in issue " + issue.Key)
 					return 0, err
 				}
 				return i, nil
@@ -168,7 +169,7 @@ func (app *App) StoryPointsFromIssue(issue types.JiraIssue) (int, error) {
 		}
 		switch value.Kind() {
 		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-			return int(value.Int()), nil
+			return float64(value.Int()), nil
 		case reflect.String:
 			return 0, fmt.Errorf("attribute '%s' is a string, expected a number", storyPointsFieldId)
 		default:
