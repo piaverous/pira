@@ -36,7 +36,7 @@ release:
 brews:
   - name: pira
     homepage: https://github.com/piaverous/pira
-    description: Generate Terraform moved blocks automatically for painless refactoring
+    description: Interact with Jira from your terminal
     license: Apache-2.0
     tap:
       owner: piaverous
